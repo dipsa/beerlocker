@@ -6,7 +6,7 @@ exports.postClients = function(req, res) {
   var client = new Client();
 
   //set the client properties that came from the POST data
-  client.name = req.data.name;
+  client.name = req.body.name;
   client.id = req.body.id;
   client.secret = req.body.secret;
   client.userId = req.user._id;
@@ -17,7 +17,7 @@ exports.postClients = function(req, res) {
       res.send(err);
     }
 
-    res.json({ message: 'Client added to the locker!', data: Clent });
+    res.json({ message: 'Client added to the locker!', data: client });
   });
 };
 
