@@ -1,6 +1,6 @@
 // load required packages
 var mongoose = require('mongoose');
-var bcrypt = require('bcrypt-nodejs');
+// var bcrypt = require('bcrypt-nodejs');
 
 // Define our user Schema
 var UserSchema = new mongoose.Schema({
@@ -16,6 +16,7 @@ var UserSchema = new mongoose.Schema({
 });
 
 // execute before each user.save() call
+/* remove the password hashing due to the requirements of Digest authorization strategy
 UserSchema.pre('save', function(callback) {
   var user = this;
 
@@ -39,6 +40,10 @@ UserSchema.methods.verifyPassword = function(password, cb) {
     cb(null, isMatch);
   })
 };
+*/
+
+// in order to test use
+// curl -v --user pathum:pathum --digest http://127.0.0.1:3000/api/users
 
 //Export the Mongoose model
 module.exports = mongoose.model('User', UserSchema);

@@ -2,6 +2,7 @@
 var passport = require('passport');
 var BasicStrategy = require('passport-http').BasicStrategy;
 var BearerStrategy = require('passport-http-bearer').Strategy;
+var DigestStrategy = require('passport-http').DigestStrategy;
 var User = require('../models/user');
 var Client = require('../models/client');
 var Token = require('../models/token');
@@ -63,6 +64,26 @@ passport.use(new BearerStrategy(
   }
 ));
 
-exports.isAuthenticated = passport.authenticate(['basic', 'bearer'], { session: false });
+passport.use(new DigestStrategy(
+  { qop: 'auth' },
+  function(username, callback) {
+    User.findOne({ username: username }, function(err, user) {
+      if (err) { return callback(err); }
+
+      //No user found with the username
+      if (!user) { return callback(null, false); }
+
+      // success
+      return callback(null, user, user.password);
+    });
+  },
+  function(params, callback) {
+    // validate nonces as necessary
+    callback(null, true);
+  }
+));
+
+// remove the basic auth and add digest instead
+exports.isAuthenticated = passport.authenticate(['digest', 'bearer'], { session: false });
 exports.isClientAuthenticated = passport.authenticate('client-basic', { session: false });
 exports.isBearerAuthenticated = passport.authenticate('bearer', { session: false });

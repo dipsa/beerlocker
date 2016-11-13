@@ -56,37 +56,38 @@ router.get('/', function(req, res) {
 });
 
 // create endpoint handlers for /beers prefix
-router.route('/beers')
+router.route('/api/beers')
   .post(authController.isAuthenticated, beerController.postBeers)
   .get(authController.isAuthenticated, beerController.getBeers);
 
 // create endpoint handlers for /beers/:beer_id prefix
-router.route('/beers/:beer_id')
+router.route('/api/beers/:beer_id')
   .get(authController.isAuthenticated, beerController.getBeer)
   .put(authController.isAuthenticated, beerController.putBeer)
   .delete(authController.isAuthenticated, beerController.deleteBeer);
 
 // create endpoint handlers for /users prefix
-router.route('/users')
+router.route('/api/users')
   .post(authController.isAuthenticated, userController.postUsers)
   .get(authController.isAuthenticated, userController.getUsers);
 
 // create endpoint handlers for /clients prefix
-router.route('/clients')
+router.route('/api/clients')
   .post(authController.isAuthenticated, clientController.postClients)
   .get(authController.isAuthenticated, clientController.getClients);
 
 // create endpoint handlers for oauth2 authorize
-router.route('/oauth2/authorize')
+router.route('/api/oauth2/authorize')
   .get(authController.isAuthenticated, oauth2Controller.authorization)
   .post(authController.isAuthenticated, oauth2Controller.decision);
 
 // create endpoint handler for oauth2 token
-router.route('/oauth2/token')
+router.route('/api/oauth2/token')
   .post(authController.isClientAuthenticated, oauth2Controller.token);
 
 //register all our routes with /api -  This means that all defined routes will be prefixed with ‘/api’.
-app.use('/api', router);
+// remove the /api prefix and move it to individual routes as Digest auth cannot see it when it is detached
+app.use(router);
 
 //start the server
 app.listen(port);
